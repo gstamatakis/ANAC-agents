@@ -29,12 +29,12 @@ public class Thresh1 extends ThrashAgent {
 
     @Override
     public SimulatedAnnealingParams getSimulatedAnnealingParams() {
-        return new SimulatedAnnealingParams(1.0, 0.01, 0.99, 1);
+        return new SimulatedAnnealingParams(1.0, 0.001, 0.999, 1);
     }
 
     @Override
     public double getBidUtilThreshold() {
-        return 0.99;
+        return 0.999;
     }
 
     @Override
