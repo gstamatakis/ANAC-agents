@@ -7,7 +7,7 @@ import negotiator.parties.NegotiationInfo;
 
 import java.util.Random;
 
-public class ThresholdAgent extends ThrashAgent {
+public class BestAgent extends ThrashAgent {
 
     @Override
     public void init(NegotiationInfo info) {

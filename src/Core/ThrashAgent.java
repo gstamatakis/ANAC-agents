@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Agent ThresholdAgent.
+ * Agent BestAgent.
  */
 public abstract class ThrashAgent extends AbstractNegotiationParty implements AgentAPI {
-    static StrategyEnum AgentStrat;
-    static SearchMethodEnum SearchingMethod;
-    static ValFreqEnum ValueFrequencySel;
+    private StrategyEnum AgentStrat;
+    public static SearchMethodEnum SearchingMethod;
+    public static ValFreqEnum ValueFrequencySel;
 
     private AbstractUtilitySpace utilitySpace;
     private NegotiationStatistics Information;

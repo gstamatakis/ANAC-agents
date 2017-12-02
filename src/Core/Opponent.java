@@ -1,6 +1,5 @@
 package Core;
 
-import negotiator.AgentID;
 import negotiator.Bid;
 import negotiator.issue.Issue;
 import negotiator.issue.Value;
@@ -10,32 +9,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-
 public class Opponent {
-    AgentID agentID;
-    ArrayList<Bid> BidHistory;
+    private ArrayList<Bid> BidHistory;
     ArrayList<Bid> AcceptHistory;
-    ArrayList<Double> TimeBidHistory;//A list containing the time intervals at witch each Bid of the opponent was offered
     Double H;
-    Double Average; // average
-    Double Variance; // Dispersion
-    Double Sum; // sum
-    Double PowSum; // Sum of squares
-    Double StandardDeviation; // standard deviation
-    Double WorstOfferUtil; //the worst utility the opponent offered our agent
-    Double BestOfferUtil; //the best utility the opponent offered our agent
-    Double BestOfferUtilWithoutLastOffer; //the best utility the opponent offered our agent counting out his/hers last bid
-    HashMap<Issue, HashMap<Value, Integer>> ValueFrequency; // the value frequency matrix of each issue of each negotiator
-    HashMap<Issue, HashMap<Value, Double>> ValueFrequencyWeighted; // the value frequency matrix of each issue of each negotiator weighted by the WeightFunction
+    Double Average;
+    Double Variance;
+    Double Sum;
+    Double PowSum;
+    Double StandardDeviation;
+    Double WorstOfferUtil;
+    Double BestOfferUtil;
+    private Double BestOfferUtilWithoutLastOffer;                   //the best utility the opponent offered our agent counting out his/hers last bid
+    HashMap<Issue, HashMap<Value, Integer>> ValueFrequency;         // the value frequency matrix of each issue of each negotiator
+    HashMap<Issue, HashMap<Value, Double>> ValueFrequencyWeighted;  // the value frequency matrix of each issue of each negotiator weighted by the WeightFunction
     HashMap<Issue, HashMap<Value, Integer>> AcceptedValueFrequency; // the value frequency matrix of each issue of each negotiator
     private Random random;
 
-    Opponent(AgentID agentID, Random RNG) {
-        this.agentID = agentID;
-
+    Opponent(Random RNG) {
         this.H = 0.5;
         this.BidHistory = new ArrayList<>();
-        this.TimeBidHistory = new ArrayList<>();
         this.AcceptHistory = new ArrayList<>();
         this.Average = 0.0;
         this.Variance = 0.0;
@@ -55,7 +48,6 @@ public class Opponent {
 
     double updateNegotiatingInfo(Bid offeredBid, double timeOfTheOffer, AbstractUtilitySpace utilitySpace) {
         BidHistory.add(offeredBid);
-        TimeBidHistory.add(timeOfTheOffer);
 
         double util = utilitySpace.getUtilityWithDiscount(offeredBid, 0.0);
 
@@ -101,11 +93,5 @@ public class Opponent {
     public void updateFrequency(Issue issue, Value value, int weight) {
         HashMap<Value, Integer> this_issue = this.ValueFrequency.get(issue);
         this_issue.put(value, this_issue.get(value) + weight);
-    }
-
-
-    @Override
-    public String toString() {
-        return this.agentID + " " + this.BidHistory.toString();
     }
 }

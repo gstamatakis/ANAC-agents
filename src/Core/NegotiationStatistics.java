@@ -106,12 +106,12 @@ public class NegotiationStatistics {
     }
 
     /**
-     * Core.Opponent "constructor".
+     * Opponent init
      *
      * @param sender The AgentID of the sender.
      */
     void initOpponent(AgentID sender) {
-        Opponent opponent = new Opponent(sender, RNG);
+        Opponent opponent = new Opponent(RNG);
 
         for (Issue issue : issues) {
             opponent.ValueFrequency.put(issue, new HashMap<>());

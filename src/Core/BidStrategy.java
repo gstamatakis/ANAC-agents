@@ -257,7 +257,7 @@ public class BidStrategy {
         return max_bid != null ? max_bid : targetBids.get(RNG.nextInt(targetBids.size() - 1));
     }
 
-    public Bid AppropriateSearch(Bid val) {
+    private Bid AppropriateSearch(Bid val) {
         switch (ThrashAgent.SearchingMethod) {
             case SimulatedAnnealing:
                 return SimulatedAnnealingSearch(val);
