@@ -1,4 +1,4 @@
-package AgentCore;
+package Core;
 
 import negotiator.AgentID;
 import negotiator.Bid;

@@ -1,4 +1,4 @@
-import AgentCore.ThrashAgent;
+import Core.ThrashAgent;
 import Utils.SAparams;
 import Utils.SearchMethodEnum;
 import Utils.StrategyEnum;

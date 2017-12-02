@@ -1,4 +1,4 @@
-package AgentCore;
+package Core;
 
 import negotiator.AgentID;
 import negotiator.Bid;
@@ -106,7 +106,7 @@ public class NegotiationStatistics {
     }
 
     /**
-     * AgentCore.Opponent "constructor".
+     * Core.Opponent "constructor".
      *
      * @param sender The AgentID of the sender.
      */

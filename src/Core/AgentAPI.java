@@ -1,4 +1,4 @@
-package AgentCore;
+package Core;
 
 import Utils.SAparams;
 import Utils.SearchMethodEnum;

@@ -1,4 +1,4 @@
-package AgentCore;
+package Core;
 
 import Utils.SearchMethodEnum;
 import Utils.StrategyEnum;
