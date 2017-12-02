@@ -1,6 +1,6 @@
 package Core;
 
-import Utils.SAparams;
+import Utils.SimulatedAnnealingParams;
 import negotiator.AgentID;
 import negotiator.Bid;
 import negotiator.issue.Issue;
@@ -12,7 +12,7 @@ import java.util.*;
 
 public class BidStrategy {
 
-    private SAparams SAparams;
+    private SimulatedAnnealingParams SAparams;
     private AbstractUtilitySpace utilitySpace;
     private NegotiationStatistics Information;
     private Bid maxBid;
@@ -31,7 +31,7 @@ public class BidStrategy {
      * @param utilSpace       The given utility space.
      * @param negotiatingInfo The negotiation statistics obj.
      */
-    public BidStrategy(AbstractUtilitySpace utilSpace, NegotiationStatistics negotiatingInfo, Random RNG, double bidUtilThreshold, SAparams params) {
+    public BidStrategy(AbstractUtilitySpace utilSpace, NegotiationStatistics negotiatingInfo, Random RNG, double bidUtilThreshold, SimulatedAnnealingParams params) {
         this.utilitySpace = utilSpace;
         this.Information = negotiatingInfo;
         this.RNG = RNG;
@@ -169,14 +169,14 @@ public class BidStrategy {
         ArrayList<Bid> targetBids = new ArrayList<>(); //optimal utility
         double currentBidUtil = utilitySpace.getUtilityWithDiscount(baseBid, 0);
         double newEnergy, curEnergy, p;
-        double curTemp = SAparams.startTemperature;
+        double curTemp = SAparams.getStartTemperature();
         double targetBidUtil = 0.0;
         double nextBidUtil = 0.0;
         Bid nextBid = null;
         List<Issue> issues = Information.getIssues();
 
-        while (curTemp > SAparams.endTemperature) {
-            for (int i = 0; i < SAparams.stepNum; i++) {
+        while (curTemp > SAparams.getEndTemperature()) {
+            for (int i = 0; i < SAparams.getStepNum(); i++) {
                 Issue issue = issues.get(RNG.nextInt(issues.size()));
                 ArrayList<Value> values = Information.getValues(issue);
                 int valueIndex = RNG.nextInt(values.size());
@@ -212,7 +212,7 @@ public class BidStrategy {
                 }
             }
 
-            curTemp = curTemp * SAparams.cool;
+            curTemp = curTemp * SAparams.getCool();
         }
         return targetBids;
     }

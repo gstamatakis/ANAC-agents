@@ -1,5 +1,5 @@
 import Core.ThrashAgent;
-import Utils.SAparams;
+import Utils.SimulatedAnnealingParams;
 import Utils.SearchMethodEnum;
 import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
@@ -35,8 +35,8 @@ public class BestAgent extends ThrashAgent {
     }
 
     @Override
-    public SAparams getSimulatedAnnealingParams() {
-        return new SAparams(1.0, 0.001, 0.999, 1);
+    public SimulatedAnnealingParams getSimulatedAnnealingParams() {
+        return new SimulatedAnnealingParams(1.0, 0.001, 0.999, 1);
     }
 
     @Override

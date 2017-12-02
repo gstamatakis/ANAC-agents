@@ -1,6 +1,6 @@
 package Core;
 
-import Utils.SAparams;
+import Utils.SimulatedAnnealingParams;
 import Utils.SearchMethodEnum;
 import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
@@ -42,7 +42,7 @@ public interface AgentAPI {
      *
      * @return the SA params
      */
-    SAparams getSimulatedAnnealingParams();
+    SimulatedAnnealingParams getSimulatedAnnealingParams();
 
     /**
      * Set bid utility threshold.

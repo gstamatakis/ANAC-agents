@@ -1,5 +1,5 @@
 import Core.ThrashAgent;
-import Utils.SAparams;
+import Utils.SimulatedAnnealingParams;
 import Utils.SearchMethodEnum;
 import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
@@ -28,8 +28,8 @@ public class TimeAgent extends ThrashAgent {
     }
 
     @Override
-    public SAparams getSimulatedAnnealingParams() {
-        return new SAparams();
+    public SimulatedAnnealingParams getSimulatedAnnealingParams() {
+        return new SimulatedAnnealingParams();
     }
 
     @Override

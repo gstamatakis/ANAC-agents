@@ -1,5 +1,5 @@
 import Core.ThrashAgent;
-import Utils.SAparams;
+import Utils.SimulatedAnnealingParams;
 import Utils.SearchMethodEnum;
 import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
@@ -28,13 +28,13 @@ public class Thresh1 extends ThrashAgent {
     }
 
     @Override
-    public SAparams getSimulatedAnnealingParams() {
-        return new SAparams(1.0, 0.01, 0.999, 1);
+    public SimulatedAnnealingParams getSimulatedAnnealingParams() {
+        return new SimulatedAnnealingParams(1.0, 0.01, 0.99, 1);
     }
 
     @Override
     public double getBidUtilThreshold() {
-        return 0.999;
+        return 0.99;
     }
 
     @Override
