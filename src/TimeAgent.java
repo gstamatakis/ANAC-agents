@@ -1,6 +1,6 @@
-import AgentCore.ThrashAgent;
-import Utils.SAparams;
+import Core.ThrashAgent;
 import Utils.SearchMethodEnum;
+import Utils.SimulatedAnnealingParams;
 import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
 
@@ -28,13 +28,23 @@ public class TimeAgent extends ThrashAgent {
     }
 
     @Override
-    public SAparams getSimulatedAnnealingParams() {
-        return new SAparams();
+    public SimulatedAnnealingParams getSimulatedAnnealingParams() {
+        return new SimulatedAnnealingParams();
     }
 
     @Override
     public double getBidUtilThreshold() {
         return 0.999;
+    }
+
+    @Override
+    public double getTimeScalingFactor() {
+        return 1;
+    }
+
+    @Override
+    public double getCutoffValue() {
+        return 1e-7;
     }
 
     @Override
