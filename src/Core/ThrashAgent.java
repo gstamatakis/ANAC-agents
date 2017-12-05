@@ -20,6 +20,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     private StrategyEnum AgentStrat;
     public static SearchMethodEnum SearchingMethod;
     public static ValFreqEnum ValueFrequencySel;
+    public static double CutoffVal;
 
     private AbstractUtilitySpace utilitySpace;
     private NegotiationStatistics Information;
@@ -36,10 +37,11 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         AgentStrat = getAgentStrategy();
         SearchingMethod = getSearchingMethod();
         ValueFrequencySel = getFrequencyValueSelection();
+        CutoffVal = getCutoffValue();
 
         utilitySpace = info.getUtilitySpace();
         Information = new NegotiationStatistics(utilitySpace, RNG);
-        bidStrategy = new BidStrategy(utilitySpace, Information, RNG, getBidUtilThreshold(), getSimulatedAnnealingParams());
+        bidStrategy = new BidStrategy(utilitySpace, Information, RNG, getBidUtilThreshold(), getSimulatedAnnealingParams(), getTimeScalingFactor());
     }
 
     /**

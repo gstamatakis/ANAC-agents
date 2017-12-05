@@ -1,7 +1,7 @@
 package Core;
 
-import Utils.SimulatedAnnealingParams;
 import Utils.SearchMethodEnum;
+import Utils.SimulatedAnnealingParams;
 import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
 
@@ -50,5 +50,19 @@ public interface AgentAPI {
      * @return the utility threshold chosen by BidStrategy.
      */
     double getBidUtilThreshold();
+
+    /**
+     * Scaling in TIME strategy.
+     *
+     * @return The scaling factor for Time strategy.
+     */
+    double getTimeScalingFactor();
+
+    /**
+     * Return the "relative zero". All values below this will be considered zero.
+     *
+     * @return Cutoff factor
+     */
+    double getCutoffValue();
 
 }

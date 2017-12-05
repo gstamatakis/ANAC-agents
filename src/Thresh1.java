@@ -1,6 +1,6 @@
 import Core.ThrashAgent;
-import Utils.SimulatedAnnealingParams;
 import Utils.SearchMethodEnum;
+import Utils.SimulatedAnnealingParams;
 import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
 
@@ -24,7 +24,7 @@ public class Thresh1 extends ThrashAgent {
 
     @Override
     public ValFreqEnum getFrequencyValueSelection() {
-        return ValFreqEnum.ValueFreq;
+        return ValFreqEnum.AcceptedValueFreq;
     }
 
     @Override
@@ -35,6 +35,16 @@ public class Thresh1 extends ThrashAgent {
     @Override
     public double getBidUtilThreshold() {
         return 0.999;
+    }
+
+    @Override
+    public double getTimeScalingFactor() {
+        return 0;
+    }
+
+    @Override
+    public double getCutoffValue() {
+        return 1e-7;
     }
 
     @Override

@@ -1,6 +1,6 @@
 import Core.ThrashAgent;
-import Utils.SimulatedAnnealingParams;
 import Utils.SearchMethodEnum;
+import Utils.SimulatedAnnealingParams;
 import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
 import negotiator.parties.NegotiationInfo;
@@ -42,6 +42,16 @@ public class BestAgent extends ThrashAgent {
     @Override
     public double getBidUtilThreshold() {
         return 0.99;
+    }
+
+    @Override
+    public double getTimeScalingFactor() {
+        return 0;
+    }
+
+    @Override
+    public double getCutoffValue() {
+        return 1e-7;
     }
 
     @Override

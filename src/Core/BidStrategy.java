@@ -10,8 +10,11 @@ import negotiator.utility.AdditiveUtilitySpace;
 
 import java.util.*;
 
+import static Core.ThrashAgent.CutoffVal;
+
 public class BidStrategy {
 
+    private final double scalingFactor;
     private SimulatedAnnealingParams SAparams;
     private AbstractUtilitySpace utilitySpace;
     private NegotiationStatistics Information;
@@ -31,13 +34,15 @@ public class BidStrategy {
      * @param utilSpace       The given utility space.
      * @param negotiatingInfo The negotiation statistics obj.
      */
-    public BidStrategy(AbstractUtilitySpace utilSpace, NegotiationStatistics negotiatingInfo, Random RNG, double bidUtilThreshold, SimulatedAnnealingParams params) {
+    public BidStrategy(AbstractUtilitySpace utilSpace, NegotiationStatistics negotiatingInfo, Random RNG,
+                       double bidUtilThreshold, SimulatedAnnealingParams params, double scalingFactor) {
         this.utilitySpace = utilSpace;
         this.Information = negotiatingInfo;
         this.RNG = RNG;
         this.reservationVal = utilSpace.getReservationValueUndiscounted();
         this.discountFactor = utilSpace.getDiscountFactor();
         this.SAparams = params;
+        this.scalingFactor = scalingFactor;
 
         // initial search of maximum utility value Bid
         if (utilitySpace instanceof AdditiveUtilitySpace) {
@@ -101,7 +106,7 @@ public class BidStrategy {
      * <p>
      * Our agent proposes a bid whose
      * utility exceeds target (t) and the highest Uop (Eq. 13.4). It accepts the opponent’s
-     * bids when they are more than target (t).
+     * bids when they are more than target (t). Scaling factor is used experimentally.
      * <p>
      * target(t)
      * = (1 − t^3 )(1 − targetend ) + targetend (d=1)
@@ -112,7 +117,8 @@ public class BidStrategy {
      */
     double targetTime(double time) {
         double targetEnd = targetEnd(time);
-        return discountFactor != 1.0 ?
+
+        return scalingFactor * discountFactor != 1.0 ?
                 (1 - Math.pow(time, discountFactor)) * (1 - targetEnd) + targetEnd :
                 (1 - Math.pow(time, 3)) * (1 - targetEnd) + targetEnd;
     }
@@ -303,22 +309,22 @@ public class BidStrategy {
     double getThreshold(double time) {
         double threshold = 1.0;
         double alpha = 3.0;
+        double emax = 1.0;
 
         //Calculate emax for all negotiating partners and search for the smallest one
         HashMap<AgentID, Opponent> rivals = Information.getOpponents();
-        double emax = 1.0;
+
         for (AgentID sender : rivals.keySet()) {
             double avg = rivals.get(sender).Average;
             double sd = rivals.get(sender).StandardDeviation;
 
-            // emax = Math.min(emax, m + (1 - m)*calWidth(m, sd));
-            // adopt maximum utility value in session now from Information.getRivalMax (sender)
+            // emax = Math.min(emax, m + (1 - m) * calWidth(m, sd));
             emax = Math.max(
                     Math.min(emax, Math.max(rivals.get(sender).BestOfferUtil, avg + (1 - avg) * calWidth(avg, sd))),
-                    reservationVal); // If it is smaller than the reservation price, it`s adopted.
+                    reservationVal);
         }
 
-        threshold = 1.0 - discountFactor < 1e-7 ?
+        threshold = 1.0 - discountFactor < CutoffVal ?
                 Math.min(threshold, 1 - (1 - emax) * Math.pow(time, alpha)) :
                 Math.max(threshold - time, emax);
 
