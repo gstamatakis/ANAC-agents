@@ -11,6 +11,7 @@ import negotiator.utility.AdditiveUtilitySpace;
 import java.util.*;
 
 import static Core.ThrashAgent.CutoffVal;
+import static Core.ThrashAgent.gLog;
 
 public class BidStrategy {
 
@@ -54,7 +55,7 @@ public class BidStrategy {
             Information.initValueRelativeUtility();
             return;
         }
-
+        gLog.println("@1");
         int tryNum = utilitySpace.getDomain().getIssues().size();
         maxBid = utilitySpace.getDomain().getRandomBid(RNG);
         for (int i = 0; i < tryNum; i++) {

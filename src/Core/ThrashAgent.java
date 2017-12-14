@@ -8,7 +8,6 @@ import negotiator.Bid;
 import negotiator.actions.*;
 import negotiator.parties.AbstractNegotiationParty;
 import negotiator.parties.NegotiationInfo;
-import negotiator.persistent.PersistentDataContainer;
 import negotiator.utility.AbstractUtilitySpace;
 
 import java.io.FileWriter;
@@ -72,6 +71,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
      */
     @Override
     public Action chooseAction(List<Class<? extends Action>> validActions) {
+        gLog.println("chooseAction");
         Information.incrementRound();
         double time = getTimeLine().getTime();
         Double targetTime;
@@ -93,18 +93,24 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                 return new Offer(getPartyId(), Information.updateMyBidHistory(bidToOffer));
 
             case Threshold:
+                if (Information.getRound() < 3) {
+                    return new Offer(getPartyId(), Information.updateMyBidHistory(bidStrategy.getMaxBid()));
+                }
+
                 if (utilitySpace.getUtility(offeredBid) >= bidStrategy.getThreshold(time)) {
                     return new Accept(getPartyId(), offeredBid);
                 } else if (validActions.contains(EndNegotiation.class) && bidStrategy.selectEndNegotiation(time) && Information.getRound() > 2) {
-                    gLog.println("Thresh End Nego.");
                     return new EndNegotiation(getPartyId());
                 }
 
                 bidToOffer = bidStrategy.AppropriateSearch(generateRandomBid(), bidStrategy.getThreshold(time));
-                gLog.println("Thresh bid offer: " + utilitySpace.getUtility(bidToOffer));
                 return new Offer(getPartyId(), Information.updateMyBidHistory(bidToOffer));
 
             case Mixed: //Does not EndNegotiations
+                if (Information.getRound() < 3) {
+                    return new Offer(getPartyId(), Information.updateMyBidHistory(bidStrategy.getMaxBid()));
+                }
+
                 if (utilitySpace.isDiscounted()) {
                     targetTime = bidStrategy.targetTime(time);
                     bidToOffer = bidStrategy.SimulatedAnnealingUop(utilitySpace.getDomain().getRandomBid(RNG), targetTime, time);
@@ -136,12 +142,13 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     public void receiveMessage(AgentID sender, Action action) {
         super.receiveMessage(sender, action);
         double time = getTimeLine().getTime();
-        gLog.println("START!");
         if (action != null) {
             if (action instanceof Inform) {
+                gLog.println("INFORM!");
                 Integer opponentsNum = (Integer) ((Inform) action).getValue();
                 Information.updateOpponentsNum(opponentsNum);
             } else if (action instanceof Offer) {
+                gLog.println("OFFER!");
                 if (!Information.getOpponents().containsKey(sender)) {
                     Information.initOpponent(sender);
                 }
@@ -149,13 +156,14 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                 offeredBid = ((Offer) action).getBid();
                 Information.updateInfo(sender, offeredBid, time);
             } else if (action instanceof Accept) {
+                gLog.println("ACCEPT!");
                 if (!Information.getOpponents().containsKey(sender)) {
                     Information.initOpponent(sender);
                 }
                 Information.updateAcceptanceHistory(sender, offeredBid);
                 supporter_num++;
             } else if (action instanceof EndNegotiation) {
-                gLog.println("GAME OVER!");
+                gLog.println("END_NEGO!");
             }
 
             if (offeredBid != null && supporter_num == Information.getNegotiatorNum() - 1) {
@@ -169,16 +177,5 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         gLog.println("GGWP");
         gLog.close();
         return super.negotiationEnded(acceptedBid);
-    }
-
-    /**
-     * Has to do with learning.
-     * Investigate further..
-     *
-     * @return PDC
-     */
-    @Override
-    public PersistentDataContainer getData() {
-        return super.getData();
     }
 }

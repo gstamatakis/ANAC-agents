@@ -36,7 +36,6 @@ public class NegotiationStatistics {
         allValueFrequency = new HashMap<>();
 
         BestOfferedUtility = 0.0;
-        negotiatorNum = 3;
         round = 0;
         MaxPopularBidUtility = 0.0;
         OwnWorstOfferedUtility = 1.0;
