@@ -103,7 +103,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                     return new EndNegotiation(getPartyId());
                 }
 
-                bidToOffer = bidStrategy.AppropriateSearch(generateRandomBid(), bidStrategy.getThreshold(time));
+                bidToOffer = bidStrategy.AppropriateSearch(generateRandomBid(), time);
                 return new Offer(getPartyId(), Information.updateMyBidHistory(bidToOffer));
 
             case Mixed: //Does not EndNegotiations
@@ -118,7 +118,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                         return new Accept(getPartyId(), offeredBid);
                     }
                 } else {
-                    bidToOffer = bidStrategy.AppropriateSearch(generateRandomBid(), bidStrategy.getThreshold(time));
+                    bidToOffer = bidStrategy.AppropriateSearch(generateRandomBid(), time);
                     if (utilitySpace.getUtility(offeredBid) >= bidStrategy.getThreshold(time)) {
                         return new Accept(getPartyId(), offeredBid);
                     }
