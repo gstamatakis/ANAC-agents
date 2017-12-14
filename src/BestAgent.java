@@ -16,7 +16,7 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public Random getRand() {
-        return new Random(42); //TODO Remove on Release;
+        return new Random(); //TODO Remove on Release;
     }
 
     @Override

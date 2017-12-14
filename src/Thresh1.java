@@ -3,13 +3,20 @@ import Utils.SearchMethodEnum;
 import Utils.SimulatedAnnealingParams;
 import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
+import negotiator.parties.NegotiationInfo;
 
 import java.util.Random;
 
 public class Thresh1 extends ThrashAgent {
+
+    @Override
+    public void init(NegotiationInfo info) {
+        super.init(info);
+    }
+
     @Override
     public Random getRand() {
-        return new Random(42);
+        return new Random(); //TODO Remove on Release;
     }
 
     @Override
@@ -19,7 +26,7 @@ public class Thresh1 extends ThrashAgent {
 
     @Override
     public SearchMethodEnum getSearchingMethod() {
-        return SearchMethodEnum.Relative;
+        return SearchMethodEnum.SimulatedAnnealing;
     }
 
     @Override
@@ -34,7 +41,7 @@ public class Thresh1 extends ThrashAgent {
 
     @Override
     public double getBidUtilThreshold() {
-        return 0.999;
+        return 0.99;
     }
 
     @Override
@@ -44,16 +51,16 @@ public class Thresh1 extends ThrashAgent {
 
     @Override
     public double getCutoffValue() {
-        return 1e-7;
+        return 1e-4;
     }
 
     @Override
     public double getVetoVal() {
-        return 0;
+        return 0.33;
     }
 
     @Override
     public String getDescription() {
-        return "TAgent1";
+        return "Th SA Std";
     }
 }

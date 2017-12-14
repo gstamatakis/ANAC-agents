@@ -33,7 +33,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     private int supporter_num = 0;
     private Bid offeredBid = null;
     private Random RNG;
-    private int round;
+    private HashMap<Integer, Bid> lastBids;
 
     static PrintWriter gLog;
 
@@ -47,7 +47,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         ValueFrequencySel = getFrequencyValueSelection();
         CutoffVal = getCutoffValue();
         VetoVal = getVetoVal();
-        round = 0;
+        lastBids = new HashMap<>();
 
         utilitySpace = info.getUtilitySpace();
         Information = new NegotiationStatistics(utilitySpace, RNG);
@@ -71,11 +71,18 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
      */
     @Override
     public Action chooseAction(List<Class<? extends Action>> validActions) {
-        gLog.println("chooseAction");
         Information.incrementRound();
         double time = getTimeLine().getTime();
         Double targetTime;
         Bid bidToOffer;
+
+        if (Information.getRound() < 2) {
+            try {
+                return new Offer(getPartyId(), Information.updateMyBidHistory(utilitySpace.getMaxUtilityBid()));
+            } catch (Exception e) {
+                gLog.println(e.toString());
+            }
+        }
 
         switch (AgentStrat) {
             case Time:
@@ -93,13 +100,9 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                 return new Offer(getPartyId(), Information.updateMyBidHistory(bidToOffer));
 
             case Threshold:
-                if (Information.getRound() < 3) {
-                    return new Offer(getPartyId(), Information.updateMyBidHistory(bidStrategy.getMaxBid()));
-                }
-
                 if (utilitySpace.getUtility(offeredBid) >= bidStrategy.getThreshold(time)) {
                     return new Accept(getPartyId(), offeredBid);
-                } else if (validActions.contains(EndNegotiation.class) && bidStrategy.selectEndNegotiation(time) && Information.getRound() > 2) {
+                } else if (validActions.contains(EndNegotiation.class) && bidStrategy.selectEndNegotiation(time)) {
                     return new EndNegotiation(getPartyId());
                 }
 
@@ -107,10 +110,6 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                 return new Offer(getPartyId(), Information.updateMyBidHistory(bidToOffer));
 
             case Mixed: //Does not EndNegotiations
-                if (Information.getRound() < 3) {
-                    return new Offer(getPartyId(), Information.updateMyBidHistory(bidStrategy.getMaxBid()));
-                }
-
                 if (utilitySpace.isDiscounted()) {
                     targetTime = bidStrategy.targetTime(time);
                     bidToOffer = bidStrategy.SimulatedAnnealingUop(utilitySpace.getDomain().getRandomBid(RNG), targetTime, time);
@@ -121,6 +120,8 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                     bidToOffer = bidStrategy.AppropriateSearch(generateRandomBid(), time);
                     if (utilitySpace.getUtility(offeredBid) >= bidStrategy.getThreshold(time)) {
                         return new Accept(getPartyId(), offeredBid);
+                    } else if (validActions.contains(EndNegotiation.class) && bidStrategy.selectEndNegotiation(time)) {
+                        return new EndNegotiation(getPartyId());
                     }
                 }
                 return new Offer(getPartyId(), Information.updateMyBidHistory(bidToOffer));
@@ -144,26 +145,24 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         double time = getTimeLine().getTime();
         if (action != null) {
             if (action instanceof Inform) {
-                gLog.println("INFORM!");
                 Integer opponentsNum = (Integer) ((Inform) action).getValue();
                 Information.updateOpponentsNum(opponentsNum);
             } else if (action instanceof Offer) {
-                gLog.println("OFFER!");
                 if (!Information.getOpponents().containsKey(sender)) {
                     Information.initOpponent(sender);
                 }
                 supporter_num = 1;
                 offeredBid = ((Offer) action).getBid();
                 Information.updateInfo(sender, offeredBid, time);
+                lastBids.put(Information.getRound() % 10, offeredBid);
             } else if (action instanceof Accept) {
-                gLog.println("ACCEPT!");
                 if (!Information.getOpponents().containsKey(sender)) {
                     Information.initOpponent(sender);
                 }
                 Information.updateAcceptanceHistory(sender, offeredBid);
                 supporter_num++;
             } else if (action instanceof EndNegotiation) {
-                gLog.println("END_NEGO!");
+                gLog.println("Someone left..");
             }
 
             if (offeredBid != null && supporter_num == Information.getNegotiatorNum() - 1) {

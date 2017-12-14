@@ -50,18 +50,18 @@ public class BidStrategy {
             try {
                 maxBid = utilitySpace.getMaxUtilityBid();
             } catch (Exception e) {
-                e.printStackTrace();
+                gLog.println(e.toString());
             }
             Information.initValueRelativeUtility();
             return;
         }
-        gLog.println("@1");
+
         int tryNum = utilitySpace.getDomain().getIssues().size();
         maxBid = utilitySpace.getDomain().getRandomBid(RNG);
         for (int i = 0; i < tryNum; i++) {
-            maxBid = AppropriateSearch(maxBid);
+            maxBid = AppropriateSearch(maxBid, -1);
             while (utilitySpace.getUtilityWithDiscount(maxBid, 0.0) < utilitySpace.getReservationValue()) {
-                maxBid = AppropriateSearch(maxBid);
+                maxBid = AppropriateSearch(maxBid, -1);
             }
             if (utilitySpace.getUtilityWithDiscount(maxBid, 0.0) >= bidUtilThreshold) {
                 break;
@@ -263,21 +263,12 @@ public class BidStrategy {
         return max_bid != null ? max_bid : targetBids.get(RNG.nextInt(targetBids.size() - 1));
     }
 
-    public Bid AppropriateSearch(Bid val) {
-        switch (ThrashAgent.SearchingMethod) {
-            case SimulatedAnnealing:
-                return SimulatedAnnealingSearch(val, 1.0, 0);
-            case Relative:
-                return relativeUtilitySearch(val);
-            default:
-                throw new IllegalStateException("Default case at AppropriateSearch");
-        }
-    }
-
     public Bid AppropriateSearch(Bid val, double time) {
         switch (ThrashAgent.SearchingMethod) {
             case SimulatedAnnealing:
-                return SimulatedAnnealingSearch(val, getThreshold(time), time);
+                return time == -1 ?
+                        SimulatedAnnealingSearch(val, 1.0, 0) :
+                        SimulatedAnnealingSearch(val, getThreshold(time), time);
             case Relative:
                 return relativeUtilitySearch(val);
             default:
@@ -319,7 +310,6 @@ public class BidStrategy {
      */
     double getThreshold(double time) {
         double threshold = 1.0;
-        double alpha = 3.0;
         double emax = 1.0;
 
         //Calculate emax for all negotiating partners and search for the smallest one
@@ -328,15 +318,14 @@ public class BidStrategy {
         for (AgentID sender : rivals.keySet()) {
             double avg = rivals.get(sender).Average;
             double sd = rivals.get(sender).StandardDeviation;
+            double e2 = Math.max(rivals.get(sender).BestOfferUtil, avg + (1 - avg) * calWidth(avg, sd));
 
-            // emax = Math.min(emax, m + (1 - m) * calWidth(m, sd));
-            emax = Math.max(
-                    Math.min(emax, Math.max(rivals.get(sender).BestOfferUtil, avg + (1 - avg) * calWidth(avg, sd))),
-                    reservationVal);
+            // emax ~= Math.min(emax, m + (1 - m) * calWidth(m, sd));
+            emax = Math.max(Math.min(emax, e2), reservationVal);
         }
 
         threshold = 1.0 - discountFactor < CutoffVal ?
-                Math.min(threshold, 1 - (1 - emax) * Math.pow(time, alpha)) :
+                Math.min(threshold, 1 - (1 - emax) * Math.pow(time, 3.0)) :
                 Math.max(threshold - time, emax);
 
         // Negotiations on the brink of breakup, make a concession to the greatest one in the past proposal
