@@ -25,9 +25,8 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     public static SearchMethodEnum SearchingMethod;
     public static ValFreqEnum ValueFrequencySel;
     static double CutoffVal;
-    static double VetoVal;
+    private static double VetoVal;
 
-    static BidHistory bidHistory;
     private AbstractUtilitySpace utilitySpace;
     private NegotiationStatistics Information;
     private BidStrategy bidStrategy;
@@ -49,7 +48,12 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         CutoffVal = getCutoffValue();
         VetoVal = getVetoVal();
         lastBids = new HashMap<>();
-        bidHistory = new BidHistory(info, getData());
+
+        try {
+            //BidHistory bidHistory = new BidHistory(getData()); //TODO fix this
+        } catch (Exception e) {
+            gLog.println(e.toString());
+        }
 
         utilitySpace = info.getUtilitySpace();
         Information = new NegotiationStatistics(utilitySpace, RNG);

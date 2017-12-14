@@ -2,6 +2,9 @@ package Core;
 
 import list.Tuple;
 import negotiator.parties.NegotiationInfo;
+import negotiator.persistent.StandardInfoList;
+import negotiator.persistent.StandardInfo;
+import negotiator.persistent.PersistentDataContainer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,28 +12,27 @@ import java.util.Map;
 import static Core.ThrashAgent.gLog;
 
 public class BidHistory {
-    private NegotiationInfo info;
-    private negotiator.persistent.StandardInfoList history;
+    private StandardInfoList history;
 
+    public BidHistory(PersistentDataContainer pData) {
+        gLog.println("@1");
 
-    public BidHistory(NegotiationInfo info, negotiator.persistent.PersistentDataContainer pData) {
-        this.info = info;
         switch (pData.getPersistentDataType()) {
             case DISABLED:
                 break;
             case SERIALIZABLE:
                 break;
             case STANDARD:
-                history = (negotiator.persistent.StandardInfoList) pData.get();
-                negotiator.persistent.StandardInfo lastInfo;
+                history = (StandardInfoList) pData.get();
 
                 if (!history.isEmpty()) {
                     // example of using the history. Compute for each party the maximum utility of the bids in last session.
                     Map<String, Double> maxUtils = new HashMap<>();
-                    lastInfo = history.get(history.size() - 1); //last session (?).
+                    StandardInfo lastInfo = history.get(history.size() - 1);
                     for (Tuple<String, Double> offered : lastInfo.getUtilities()) {
                         String party = offered.get1();
                         Double util = offered.get2();
+                        gLog.println(party + " " + util);
                         maxUtils.put(party, maxUtils.containsKey(party) ? Math.max(maxUtils.get(party), util) : util);
                     }
                     gLog.println(maxUtils);
@@ -45,7 +47,7 @@ public class BidHistory {
 
             gLog.println("History index: " + h);
 
-            negotiator.persistent.StandardInfo lastinfo = history.get(h);
+            StandardInfo lastinfo = history.get(h);
 
             int counter = 0;
             for (Tuple<String, Double> offered : lastinfo.getUtilities()) {
