@@ -1,7 +1,6 @@
 package Core;
 
 import list.Tuple;
-import negotiator.parties.NegotiationInfo;
 import negotiator.persistent.StandardInfoList;
 import negotiator.persistent.StandardInfo;
 import negotiator.persistent.PersistentDataContainer;

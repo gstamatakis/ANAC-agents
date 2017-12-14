@@ -33,7 +33,6 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     private int supporter_num = 0;
     private Bid offeredBid = null;
     private Random RNG;
-    private HashMap<Integer, Bid> lastBids;
 
     static PrintWriter gLog;
 
@@ -47,10 +46,9 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         ValueFrequencySel = getFrequencyValueSelection();
         CutoffVal = getCutoffValue();
         VetoVal = getVetoVal();
-        lastBids = new HashMap<>();
 
         try {
-            //BidHistory bidHistory = new BidHistory(getData()); //TODO fix this
+            new BidHistory(getData()).analyzeHistory(); //TODO fix this
         } catch (Exception e) {
             gLog.println(e.toString());
         }
@@ -160,7 +158,6 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                 supporter_num = 1;
                 offeredBid = ((Offer) action).getBid();
                 Information.updateInfo(sender, offeredBid, time);
-                lastBids.put(Information.getRound() % 10, offeredBid);
             } else if (action instanceof Accept) {
                 if (!Information.getOpponents().containsKey(sender)) {
                     Information.initOpponent(sender);
@@ -171,7 +168,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                 gLog.println("Someone left..");
             }
 
-            if (offeredBid != null && supporter_num == Information.getNegotiatorNum() - 1) {
+            if (offeredBid != null && supporter_num == (Information.getNegotiatorNum() - 1)) {
                 Information.updatePopularBidList(offeredBid);
             }
         }
