@@ -27,6 +27,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     static double CutoffVal;
     static double VetoVal;
 
+    static BidHistory bidHistory;
     private AbstractUtilitySpace utilitySpace;
     private NegotiationStatistics Information;
     private BidStrategy bidStrategy;
@@ -48,6 +49,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         CutoffVal = getCutoffValue();
         VetoVal = getVetoVal();
         lastBids = new HashMap<>();
+        bidHistory = new BidHistory(info, getData());
 
         utilitySpace = info.getUtilitySpace();
         Information = new NegotiationStatistics(utilitySpace, RNG);
