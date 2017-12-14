@@ -48,6 +48,11 @@ public class Time2 extends ThrashAgent {
     }
 
     @Override
+    public double getVetoVal() {
+        return 0;
+    }
+
+    @Override
     public String getDescription() {
         return "Ti SA Std";
     }

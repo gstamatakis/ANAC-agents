@@ -65,4 +65,10 @@ public interface AgentAPI {
      */
     double getCutoffValue();
 
+    /**
+     * Reject all bids below this value.
+     * The opponent can still accept our offers though!
+     * @return The Veto value.
+     */
+    double getVetoVal();
 }

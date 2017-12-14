@@ -37,8 +37,6 @@ public abstract class BadAgent extends AbstractNegotiationParty {
         System.out.println("Discount Factor is " + info.getUtilitySpace().getDiscountFactor());
         System.out.println("Reservation Value is " + info.getUtilitySpace().getReservationValueUndiscounted());
 
-        // if you need to initialize some variables, please initialize them
-        // below
 
     }
 
@@ -85,14 +83,10 @@ public abstract class BadAgent extends AbstractNegotiationParty {
 
                     // Offer the last opponent's second to last bid. Just for giggles. We will do something else.
                     List<BidDetails> hist = new ArrayList<BidDetails>();
-//					if(this.enemies.get(lastReceivedID) != null)
-//						hist = this.enemies.get(lastReceivedID).getBidHistory().getHistory();
-//					Bid lastHistBid = (Bid)((BidDetails) hist.get(hist.size() - 2)).getBid();
-//					if (lastHistBid != null)
-//						return new Offer(this.getPartyId(), lastHistBid);
+
                     Bid opBestBid = null;
                     if (this.enemies.get(lastReceivedID) != null)
-                        opBestBid = (Bid) ((BidDetails) this.enemies.get(lastReceivedID).getBidHistory().getBestBidDetails()).getBid();
+                        opBestBid = this.enemies.get(lastReceivedID).getBidHistory().getBestBidDetails().getBid();
                     if (this.getUtility(opBestBid) >= MINIMUM_BID_UTILITY) {
                         return new Offer(this.getPartyId(), opBestBid);
                     }

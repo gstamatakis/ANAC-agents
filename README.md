@@ -5,3 +5,5 @@ Simply extend Core.ThrashAgent and implement the AgentAPI interface e.g. BestAge
 See Utils.StrategyEnum for available strategies.
 
 See Utils.SearchMethodEnum for available search methods.
+
+All agent implementations are not in a package.

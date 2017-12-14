@@ -8,8 +8,13 @@ import negotiator.Bid;
 import negotiator.actions.*;
 import negotiator.parties.AbstractNegotiationParty;
 import negotiator.parties.NegotiationInfo;
+import negotiator.persistent.PersistentDataContainer;
 import negotiator.utility.AbstractUtilitySpace;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +25,8 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     private StrategyEnum AgentStrat;
     public static SearchMethodEnum SearchingMethod;
     public static ValFreqEnum ValueFrequencySel;
-    public static double CutoffVal;
+    static double CutoffVal;
+    static double VetoVal;
 
     private AbstractUtilitySpace utilitySpace;
     private NegotiationStatistics Information;
@@ -28,6 +34,8 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     private int supporter_num = 0;
     private Bid offeredBid = null;
     private Random RNG;
+
+    static PrintWriter gLog;
 
     @Override
     public void init(NegotiationInfo info) {
@@ -38,10 +46,18 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         SearchingMethod = getSearchingMethod();
         ValueFrequencySel = getFrequencyValueSelection();
         CutoffVal = getCutoffValue();
+        VetoVal = getVetoVal();
 
         utilitySpace = info.getUtilitySpace();
         Information = new NegotiationStatistics(utilitySpace, RNG);
         bidStrategy = new BidStrategy(utilitySpace, Information, RNG, getBidUtilThreshold(), getSimulatedAnnealingParams(), getTimeScalingFactor());
+
+        try {
+            gLog = new PrintWriter(new FileWriter("C:\\Users\\gstamatakis\\IdeaProjects\\ANACagents\\logs\\" + AgentStrat + "logs.txt"), true);
+        } catch (Exception e) {
+            gLog = new PrintWriter(System.out);
+        }
+        gLog.println(Instant.now());
     }
 
     /**
@@ -62,16 +78,20 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
 
         if (validActions.contains(Offer.class) && Information.getRound() <= 1) {
             return new Offer(getPartyId(), Information.updateMyBidHistory(bidStrategy.getMaxBid()));
-        } else if (validActions.contains(Accept.class)) {
+        } else if (validActions.contains(Accept.class) && utilitySpace.getUtility(bidToOffer) > VetoVal) {
             switch (AgentStrat) {
                 case Time:
                     if (utilitySpace.getUtilityWithDiscount(offeredBid, time) >= targetTime) {
+                        gLog.println("case Time: Accept : OfferedBid " + utilitySpace.getUtilityWithDiscount(offeredBid, time));
                         return new Accept(getPartyId(), offeredBid);
                     }
+                    break;
                 case Threshold:
                     if (utilitySpace.getUtility(offeredBid) >= bidStrategy.getThreshold(time)) {
+                        gLog.println("case Threshold: Accept : OfferedBid " + utilitySpace.getUtilityWithDiscount(offeredBid, time));
                         return new Accept(getPartyId(), offeredBid);
                     }
+                    break;
                 case Mixed:
                     if (utilitySpace.isDiscounted()) {
                         if (utilitySpace.getUtilityWithDiscount(offeredBid, time) >= targetTime) {
@@ -82,15 +102,18 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                             return new Accept(getPartyId(), offeredBid);
                         }
                     }
+                    break;
                 default:
-                    System.out.println("Unknown AgentStrat");
+                    gLog.println("Unknown AgentStrat " + AgentStrat);
                     return new Offer(getPartyId(), Information.updateMyBidHistory(bidToOffer));
             }
         } else if (validActions.contains(EndNegotiation.class) && bidStrategy.selectEndNegotiation(time)) {
+            gLog.println("EndNegotiation : OfferedBid " + utilitySpace.getUtility(bidToOffer));
             return new EndNegotiation(getPartyId());
-        } else {
-            return new Offer(getPartyId(), Information.updateMyBidHistory(bidToOffer));
         }
+
+        gLog.println("Default Offer: OfferedBid " + utilitySpace.getUtilityWithDiscount(offeredBid, time) + " :CounterOffer: " + utilitySpace.getUtilityWithDiscount(bidToOffer, time));
+        return new Offer(getPartyId(), Information.updateMyBidHistory(bidToOffer));
     }
 
     /**
@@ -123,12 +146,30 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                 Information.updateAcceptanceHistory(sender, offeredBid);
                 supporter_num++;
             } else if (action instanceof EndNegotiation) {
-                System.out.println("GAME OVER!");
+                gLog.println("GAME OVER!");
             }
 
             if (offeredBid != null && supporter_num == Information.getNegotiatorNum() - 1) {
                 Information.updatePopularBidList(offeredBid);
             }
         }
+    }
+
+    @Override
+    public HashMap<String, String> negotiationEnded(Bid acceptedBid) {
+        gLog.println("GGWP");
+        gLog.close();
+        return super.negotiationEnded(acceptedBid);
+    }
+
+    /**
+     * Has to do with learning.
+     * Investigate further..
+     *
+     * @return PDC
+     */
+    @Override
+    public PersistentDataContainer getData() {
+        return super.getData();
     }
 }

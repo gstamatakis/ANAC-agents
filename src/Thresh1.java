@@ -48,6 +48,11 @@ public class Thresh1 extends ThrashAgent {
     }
 
     @Override
+    public double getVetoVal() {
+        return 0;
+    }
+
+    @Override
     public String getDescription() {
         return "TAgent1";
     }

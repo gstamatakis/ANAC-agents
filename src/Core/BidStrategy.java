@@ -136,7 +136,6 @@ public class BidStrategy {
             HashMap<Issue, Value> bestValues = Information.getMaxValuesForOpponent(ids);
             Bid opponentBid = null;
 
-            //TODO untangle this mess
             Bid tempv = new Bid(maxBid);
             for (Issue issue : Information.getIssues()) {
                 opponentBid = tempv.putValue(issue.getNumber(), bestValues.get(issue));
@@ -357,7 +356,7 @@ public class BidStrategy {
      * @return True if negotiations need to end.
      */
     boolean selectEndNegotiation(double time) {
-        return !(1.0 - discountFactor < 1e-7) && reservationVal > getThreshold(time);
+        return !(1.0 - discountFactor < CutoffVal) && reservationVal > getThreshold(time);
     }
 
     public Bid getMaxBid() {
