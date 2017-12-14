@@ -19,7 +19,7 @@ public class Thresh1 extends ThrashAgent {
 
     @Override
     public SearchMethodEnum getSearchingMethod() {
-        return SearchMethodEnum.SimulatedAnnealing;
+        return SearchMethodEnum.Relative;
     }
 
     @Override

@@ -55,12 +55,12 @@ public class BidStrategy {
             return;
         }
 
-        int tryNum = utilitySpace.getDomain().getIssues().size(); // Number of trials
+        int tryNum = utilitySpace.getDomain().getIssues().size();
         maxBid = utilitySpace.getDomain().getRandomBid(RNG);
         for (int i = 0; i < tryNum; i++) {
-            maxBid = AppropriateSearch(maxBid);
+            maxBid = AppropriateSearch(maxBid, 1.0);
             while (utilitySpace.getUtilityWithDiscount(maxBid, 0.0) < utilitySpace.getReservationValue()) {
-                maxBid = AppropriateSearch(maxBid);
+                maxBid = AppropriateSearch(maxBid, 1.0);
             }
             if (utilitySpace.getUtilityWithDiscount(maxBid, 0.0) >= bidUtilThreshold) {
                 break;
@@ -228,8 +228,8 @@ public class BidStrategy {
      *
      * @param baseBid The base Bid.
      */
-    private Bid SimulatedAnnealingSearch(Bid baseBid) {
-        ArrayList<Bid> targetBids = SimulatedAnnealing(1.0, 0, baseBid);
+    private Bid SimulatedAnnealingSearch(Bid baseBid, double threshold) {
+        ArrayList<Bid> targetBids = SimulatedAnnealing(threshold, 0, baseBid);
         return targetBids.isEmpty() ? baseBid : targetBids.get(RNG.nextInt(targetBids.size()));
     }
 
@@ -262,10 +262,10 @@ public class BidStrategy {
         return max_bid != null ? max_bid : targetBids.get(RNG.nextInt(targetBids.size() - 1));
     }
 
-    private Bid AppropriateSearch(Bid val) {
+    public Bid AppropriateSearch(Bid val, double threshold) {
         switch (ThrashAgent.SearchingMethod) {
             case SimulatedAnnealing:
-                return SimulatedAnnealingSearch(val);
+                return SimulatedAnnealingSearch(val, threshold);
             case Relative:
                 return relativeUtilitySearch(val);
             default:
