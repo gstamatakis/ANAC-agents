@@ -1,6 +1,7 @@
 package Core;
 
 import list.Tuple;
+import negotiator.parties.NegotiationInfo;
 import negotiator.persistent.StandardInfoList;
 import negotiator.persistent.StandardInfo;
 import negotiator.persistent.PersistentDataContainer;
@@ -12,9 +13,10 @@ import static Core.ThrashAgent.gLog;
 
 public class BidHistory {
     private StandardInfoList history;
+    private NegotiationInfo info;
 
-    public BidHistory(PersistentDataContainer pData) {
-        gLog.println("@1");
+    public BidHistory(NegotiationInfo info, PersistentDataContainer pData) {
+        this.info = info;
 
         switch (pData.getPersistentDataType()) {
             case DISABLED:
@@ -25,13 +27,12 @@ public class BidHistory {
                 history = (StandardInfoList) pData.get();
 
                 if (!history.isEmpty()) {
-                    // example of using the history. Compute for each party the maximum utility of the bids in last session.
+                    // example of using the bidHistory. Compute for each party the maximum utility of the bids in last session.
                     Map<String, Double> maxUtils = new HashMap<>();
                     StandardInfo lastInfo = history.get(history.size() - 1);
                     for (Tuple<String, Double> offered : lastInfo.getUtilities()) {
                         String party = offered.get1();
                         Double util = offered.get2();
-                        gLog.println(party + " " + util);
                         maxUtils.put(party, maxUtils.containsKey(party) ? Math.max(maxUtils.get(party), util) : util);
                     }
                     gLog.println(maxUtils);
@@ -41,7 +42,7 @@ public class BidHistory {
     }
 
     public void analyzeHistory() {
-        // from recent to older history records
+        // from recent to older bidHistory records
         for (int h = history.size() - 1; h >= 0; h--) {
 
             gLog.println("History index: " + h);
@@ -57,7 +58,7 @@ public class BidHistory {
 
                 gLog.println("PartyID: " + party + " utilityForMe: " + util);
                 gLog.println();
-                //just print first 3 bids, not the whole history
+                //just print first 3 bids, not the whole bidHistory
                 if (counter == 3)
                     break;
             }

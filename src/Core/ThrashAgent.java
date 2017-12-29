@@ -17,11 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Agent BestAgent.
- */
 public abstract class ThrashAgent extends AbstractNegotiationParty implements AgentAPI {
     private StrategyEnum AgentStrat;
+    public static BidHistory bidHistory;
     public static SearchMethodEnum SearchingMethod;
     public static ValFreqEnum ValueFrequencySel;
     static double CutoffVal;
@@ -33,7 +31,6 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     private int supporter_num = 0;
     private Bid offeredBid = null;
     private Random RNG;
-
     static PrintWriter gLog;
 
     @Override
@@ -41,6 +38,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         super.init(info);
         this.RNG = getRand();
 
+        bidHistory = new BidHistory(info, getData());
         AgentStrat = getAgentStrategy();
         SearchingMethod = getSearchingMethod();
         ValueFrequencySel = getFrequencyValueSelection();
@@ -48,21 +46,17 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         VetoVal = getVetoVal();
 
         try {
-            new BidHistory(getData()).analyzeHistory(); //TODO fix this
+            gLog = new PrintWriter(new FileWriter("C:/Users/gstamatakis/IdeaProjects/ANAC-agents/logs/" + AgentStrat + "_logs.txt"), true);
         } catch (Exception e) {
-            gLog.println(e.toString());
+            gLog = new PrintWriter(System.out);
         }
+        gLog.println(Instant.now());
 
         utilitySpace = info.getUtilitySpace();
         Information = new NegotiationStatistics(utilitySpace, RNG);
         bidStrategy = new BidStrategy(utilitySpace, Information, RNG, getBidUtilThreshold(), getSimulatedAnnealingParams(), getTimeScalingFactor());
 
-        try {
-            gLog = new PrintWriter(new FileWriter("C:\\Users\\gstamatakis\\IdeaProjects\\ANACagents\\logs\\" + AgentStrat + "logs.txt"), true);
-        } catch (Exception e) {
-            gLog = new PrintWriter(System.out);
-        }
-        gLog.println(Instant.now());
+
     }
 
     /**
@@ -113,7 +107,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
                 bidToOffer = bidStrategy.AppropriateSearch(generateRandomBid(), time);
                 return new Offer(getPartyId(), Information.updateMyBidHistory(bidToOffer));
 
-            case Mixed: //Does not EndNegotiations
+            case Mixed:
                 if (utilitySpace.isDiscounted()) {
                     targetTime = bidStrategy.targetTime(time);
                     bidToOffer = bidStrategy.SimulatedAnnealingUop(utilitySpace.getDomain().getRandomBid(RNG), targetTime, time);

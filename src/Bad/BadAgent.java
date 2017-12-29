@@ -25,7 +25,7 @@ public abstract class BadAgent extends AbstractNegotiationParty {
     private Bid lastReceivedBid = null;
     private AgentID lastReceivedID = null;
     private String opponentType = null;
-    // A map of all opponents and their bid history. Check BadOpponent class.
+    // A map of all opponents and their bid bidHistory. Check BadOpponent class.
     private HashMap<AgentID, BadOpponent> enemies = new HashMap<>();
 
 
@@ -138,7 +138,7 @@ public abstract class BadAgent extends AbstractNegotiationParty {
         return true;
     }
 
-    // Receive a message from the server, set globals and add it to the opponent's bid history.
+    // Receive a message from the server, set globals and add it to the opponent's bid bidHistory.
     public void receiveMessage(AgentID sender, Action action) {
         super.receiveMessage(sender, action);
         if (action instanceof Offer) {
@@ -146,7 +146,7 @@ public abstract class BadAgent extends AbstractNegotiationParty {
             lastReceivedID = sender;
             BidDetails lastReceivedBidDetails = new BidDetails(lastReceivedBid, getUtility(lastReceivedBid), this.getTimeLine().getTime());
 
-            // Add the last received bid to the history of its Bad.
+            // Add the last received bid to the bidHistory of its Bad.
             if (this.enemies.get(lastReceivedID) == null)
                 this.enemies.put(lastReceivedID, new BadOpponent(lastReceivedID));
             this.enemies.get(lastReceivedID).addToHistory(lastReceivedBidDetails);

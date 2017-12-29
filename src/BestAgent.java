@@ -56,7 +56,7 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public double getVetoVal() {
-        return 0.20;
+        return 0.00;
     }
 
     @Override
