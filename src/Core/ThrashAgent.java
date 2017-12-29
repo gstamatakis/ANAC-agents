@@ -34,6 +34,8 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     private Bid offeredBid = null;
     private Random RNG;
     static PrintWriter gLog;
+    static String filename;
+
 
     @Override
     public void init(NegotiationInfo info) {
@@ -47,9 +49,10 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         ValueFrequencySel = getFrequencyValueSelection();
         CutoffVal = getCutoffValue();
         AgentStrat = getAgentStrategy();
+        filename = "C:/Users/gstamatakis/IdeaProjects/ANAC-agents/logs/" + AgentStrat + "_logs.txt";
 
         try {
-            gLog = new PrintWriter(new FileWriter("C:/Users/gstamatakis/IdeaProjects/ANAC-agents/logs/" + AgentStrat + "_logs.txt"), true);
+            gLog = new PrintWriter(new FileWriter(filename, true), true);
         } catch (Exception e) {
             gLog = new PrintWriter(System.out);
         }

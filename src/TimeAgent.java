@@ -34,7 +34,7 @@ public class TimeAgent extends ThrashAgent {
 
     @Override
     public double getBidUtilThreshold() {
-        return 0.999;
+        return 0.99;
     }
 
     @Override

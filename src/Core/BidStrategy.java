@@ -10,9 +10,7 @@ import negotiator.utility.AdditiveUtilitySpace;
 
 import java.util.*;
 
-import static Core.ThrashAgent.CutoffVal;
-import static Core.ThrashAgent.concessionThreshold;
-import static Core.ThrashAgent.gLog;
+import static Core.ThrashAgent.*;
 
 public class BidStrategy {
 
@@ -86,7 +84,18 @@ public class BidStrategy {
     private double targetEnd(double time) {
         double weightedAverage = utilitySpace.getUtilityWithDiscount(maxBid, time);
         double normalizer = 1.0;
-        //Evaluate both Sigmas in the same for-loop since they have the same bounds.
+
+        if (useHistory) {
+            try {
+                Map<String, Double> bests = bidHistory.getBestOfferedUtils();
+                for (String val : bests.keySet()) {
+                    weightedAverage += bests.get(val);
+                }
+                return weightedAverage;
+            } catch (Exception ignored) {
+            }
+        }
+
         for (AgentID ids : Information.getOpponents().keySet()) {
             HashMap<Issue, Value> bestVals = Information.getMaxValuesForOpponent(ids);
             Bid opponentBid = maxBid;
