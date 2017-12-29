@@ -11,6 +11,7 @@ import negotiator.utility.AdditiveUtilitySpace;
 import java.util.*;
 
 import static Core.ThrashAgent.CutoffVal;
+import static Core.ThrashAgent.concessionThreshold;
 import static Core.ThrashAgent.gLog;
 
 public class BidStrategy {
@@ -329,7 +330,7 @@ public class BidStrategy {
                 Math.max(threshold - time, emax);
 
         // Negotiations on the brink of breakup, make a concession to the greatest one in the past proposal
-        if (time > 0.99) {
+        if (time > concessionThreshold) {
             for (AgentID sender : rivals.keySet()) {
                 threshold = Math.min(threshold, rivals.get(sender).BestOfferUtil);
             }

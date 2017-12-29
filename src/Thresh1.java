@@ -65,6 +65,11 @@ public class Thresh1 extends ThrashAgent {
     }
 
     @Override
+    public double getConcessionThreshold() {
+        return 0.98;
+    }
+
+    @Override
     public String getDescription() {
         return "Th SA Std";
     }

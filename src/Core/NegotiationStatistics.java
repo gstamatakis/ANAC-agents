@@ -118,7 +118,9 @@ public class NegotiationStatistics {
 
         //Attempt to extract historical data
         if(useHistory){
-            bidHistory.initOppVals(opponent,sender);
+            try {
+                bidHistory.initOppVals(opponent,sender);
+            }catch (Exception ignored){}
         }
 
         for (Issue issue : issues) {

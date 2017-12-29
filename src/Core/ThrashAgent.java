@@ -20,13 +20,13 @@ import java.util.Random;
 public abstract class ThrashAgent extends AbstractNegotiationParty implements AgentAPI {
     private StrategyEnum AgentStrat;
     public static BidHistory bidHistory;
-    public static boolean useHistory;
+    static boolean useHistory;
     public static SearchMethodEnum SearchingMethod;
     public static ValFreqEnum ValueFrequencySel;
     static double CutoffVal;
     private static double VetoVal;
-    public static String myDescription;
-
+    static String myDescription;
+    static double concessionThreshold;
     private AbstractUtilitySpace utilitySpace;
     private NegotiationStatistics Information;
     private BidStrategy bidStrategy;
@@ -39,6 +39,21 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     public void init(NegotiationInfo info) {
         super.init(info);
         this.RNG = getRand();
+        utilitySpace = info.getUtilitySpace();
+        concessionThreshold = getConcessionThreshold();
+        myDescription = getDescription();
+        VetoVal = getVetoVal();
+        SearchingMethod = getSearchingMethod();
+        ValueFrequencySel = getFrequencyValueSelection();
+        CutoffVal = getCutoffValue();
+        AgentStrat = getAgentStrategy();
+
+        try {
+            gLog = new PrintWriter(new FileWriter("C:/Users/gstamatakis/IdeaProjects/ANAC-agents/logs/" + AgentStrat + "_logs.txt"), true);
+        } catch (Exception e) {
+            gLog = new PrintWriter(System.out);
+        }
+        gLog.println(Instant.now());
 
         useHistory = useHistory();
         if (useHistory) {
@@ -52,21 +67,6 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
             gLog.println("Not using history.");
         }
 
-        AgentStrat = getAgentStrategy();
-        SearchingMethod = getSearchingMethod();
-        ValueFrequencySel = getFrequencyValueSelection();
-        CutoffVal = getCutoffValue();
-        VetoVal = getVetoVal();
-        myDescription = getDescription();
-
-        try {
-            gLog = new PrintWriter(new FileWriter("C:/Users/gstamatakis/IdeaProjects/ANAC-agents/logs/" + AgentStrat + "_logs.txt"), true);
-        } catch (Exception e) {
-            gLog = new PrintWriter(System.out);
-        }
-        gLog.println(Instant.now());
-
-        utilitySpace = info.getUtilitySpace();
         Information = new NegotiationStatistics(utilitySpace, RNG);
         bidStrategy = new BidStrategy(utilitySpace, Information, RNG, getBidUtilThreshold(), getSimulatedAnnealingParams(), getTimeScalingFactor());
 

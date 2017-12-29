@@ -79,4 +79,11 @@ public interface AgentAPI {
      * @return True if the agent is allowed to use history.
      */
     boolean useHistory();
+
+    /**
+     * Value after which the agent will offer the min best offer.
+     *
+     * @return a number in [0,1]
+     */
+    double getConcessionThreshold();
 }

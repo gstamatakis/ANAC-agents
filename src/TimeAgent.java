@@ -44,7 +44,7 @@ public class TimeAgent extends ThrashAgent {
 
     @Override
     public double getCutoffValue() {
-        return 1e-7;
+        return 1e-3;
     }
 
     @Override
@@ -55,6 +55,11 @@ public class TimeAgent extends ThrashAgent {
     @Override
     public boolean useHistory() {
         return false;
+    }
+
+    @Override
+    public double getConcessionThreshold() {
+        return 0.98;
     }
 
     @Override
