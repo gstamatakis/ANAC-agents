@@ -53,6 +53,11 @@ public class TimeAgent extends ThrashAgent {
     }
 
     @Override
+    public boolean useHistory() {
+        return false;
+    }
+
+    @Override
     public String getDescription() {
         return "Ti SA Std";
     }

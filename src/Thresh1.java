@@ -60,6 +60,11 @@ public class Thresh1 extends ThrashAgent {
     }
 
     @Override
+    public boolean useHistory() {
+        return false;
+    }
+
+    @Override
     public String getDescription() {
         return "Th SA Std";
     }

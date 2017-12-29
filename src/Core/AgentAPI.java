@@ -68,7 +68,15 @@ public interface AgentAPI {
     /**
      * Reject all bids below this value.
      * The opponent can still accept our offers though!
+     *
      * @return The Veto value.
      */
     double getVetoVal();
+
+    /**
+     * Use BidHistory?
+     *
+     * @return True if the agent is allowed to use history.
+     */
+    boolean useHistory();
 }

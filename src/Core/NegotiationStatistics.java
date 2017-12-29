@@ -7,6 +7,8 @@ import negotiator.utility.AbstractUtilitySpace;
 
 import java.util.*;
 
+import static Core.ThrashAgent.*;
+
 /**
  * Class used to store info regarding the opponents, the utilSpace and our BidHistory.
  */
@@ -111,6 +113,13 @@ public class NegotiationStatistics {
      */
     void initOpponent(AgentID sender) {
         Opponent opponent = new Opponent(RNG);
+        opponent.name = sender.getName().split("@")[0];
+        opponent.isSelf = opponent.name.equals(myDescription);
+
+        //Attempt to extract historical data
+        if(useHistory){
+            bidHistory.initOppVals(opponent,sender);
+        }
 
         for (Issue issue : issues) {
             opponent.ValueFrequency.put(issue, new HashMap<>());

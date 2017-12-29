@@ -16,7 +16,7 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public Random getRand() {
-        return new Random(); //TODO Remove on Release;
+        return new Random();
     }
 
     @Override
@@ -51,12 +51,17 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public double getCutoffValue() {
-        return 1e-7;
+        return 1e-6;
     }
 
     @Override
     public double getVetoVal() {
         return 0.00;
+    }
+
+    @Override
+    public boolean useHistory() {
+        return true;
     }
 
     @Override

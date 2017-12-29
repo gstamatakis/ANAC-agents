@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Opponent {
+    String name;
     private ArrayList<Bid> BidHistory;
     ArrayList<Bid> AcceptHistory;
     Double H;
@@ -25,6 +26,7 @@ public class Opponent {
     HashMap<Issue, HashMap<Value, Double>> ValueFrequencyWeighted;  // the value frequency matrix of each issue of each negotiator weighted by the WeightFunction
     HashMap<Issue, HashMap<Value, Integer>> AcceptedValueFrequency; // the value frequency matrix of each issue of each negotiator
     private Random random;
+    public boolean isSelf;
 
     Opponent(Random RNG) {
         this.H = 0.5;
