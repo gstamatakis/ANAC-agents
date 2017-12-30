@@ -338,12 +338,16 @@ public class BidStrategy {
                 Math.min(threshold, 1 - (1 - emax) * Math.pow(time, 3.0)) :
                 Math.max(threshold - time, emax);
 
-        // Negotiations on the brink of breakup, make a concession to the greatest one in the past proposal
+        // make a concession ASAP
         if (time > concessionThreshold) {
             for (AgentID sender : rivals.keySet()) {
                 threshold = Math.min(threshold, rivals.get(sender).BestOfferUtil);
             }
             threshold = Math.max(threshold, reservationVal);
+        } else if (useHistory && time > softConcessionThreshold) {
+            for (AgentID sender : rivals.keySet()) {
+                threshold = Math.min(threshold, bidHistory.getLuckyValue(sender));
+            }
         }
 
         return threshold;

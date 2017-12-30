@@ -36,6 +36,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     static PrintWriter gLog;
     static String filename;
     static int MemoryDepth;
+    static double softConcessionThreshold;
 
 
     @Override
@@ -45,6 +46,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         utilitySpace = info.getUtilitySpace();
         MemoryDepth = getMemoryDepth();
         concessionThreshold = getConcessionThreshold();
+        softConcessionThreshold = getSoftConcessionThreshold();
         myDescription = getDescription();
         VetoVal = getVetoVal();
         SearchingMethod = getSearchingMethod();
@@ -63,7 +65,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         useHistory = useHistory();
         if (useHistory) {
             try {
-                bidHistory = new BidHistory(RNG, getData());
+                bidHistory = new BidHistory(info, RNG, getData());
             } catch (Exception e) {
                 gLog.println(e.toString());
                 useHistory = false;

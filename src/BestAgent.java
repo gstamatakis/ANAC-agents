@@ -41,7 +41,7 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public double getBidUtilThreshold() {
-        return 0.99;
+        return 0.96;
     }
 
     @Override
@@ -62,6 +62,11 @@ public class BestAgent extends ThrashAgent {
     @Override
     public boolean useHistory() {
         return true;
+    }
+
+    @Override
+    public double getSoftConcessionThreshold() {
+        return 0.9;
     }
 
     @Override

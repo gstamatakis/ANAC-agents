@@ -63,6 +63,11 @@ public class TimeAgent extends ThrashAgent {
     }
 
     @Override
+    public double getSoftConcessionThreshold() {
+        return 0.9;
+    }
+
+    @Override
     public int getMemoryDepth() {
         return 3;
     }

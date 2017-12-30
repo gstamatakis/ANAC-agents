@@ -9,6 +9,7 @@ import negotiator.persistent.StandardInfo;
 import negotiator.persistent.PersistentDataContainer;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -18,6 +19,7 @@ import static Core.ThrashAgent.bidHistory;
 import static Core.ThrashAgent.gLog;
 
 public class BidHistory {
+    private final NegotiationInfo info;
     private StandardInfoList history;
     private Map<String, Double> bestOfferedUtils;
     private Map<String, Double> worstOfferedUtils;
@@ -25,11 +27,9 @@ public class BidHistory {
     private int round;
     private Random RNG;
 
-    public BidHistory(Random RNG, PersistentDataContainer pData) {
+    public BidHistory(NegotiationInfo info, Random RNG, PersistentDataContainer pData) {
         this.RNG = RNG;
-        this.bestOfferedUtils = new HashMap<>();
-        this.worstOfferedUtils = new HashMap<>();
-        this.acceptedUtils = new HashMap<>();
+        this.info = info;
 
         switch (pData.getPersistentDataType()) {
             case DISABLED:
@@ -38,10 +38,13 @@ public class BidHistory {
                 break;
             case STANDARD:
                 this.history = (StandardInfoList) pData.get();
-                this.round = history.size();
+                this.bestOfferedUtils = new HashMap<>();
+                this.worstOfferedUtils = new HashMap<>();
+                this.acceptedUtils = new HashMap<>();
 
                 //Compute for each party the maximum and minimum utility in last session.
                 if (!history.isEmpty()) {
+                    this.round = history.size();
 
                     if (MemoryDepth < 1 || history.size() <= MemoryDepth) {
                         MemoryDepth = history.size() - 1;
@@ -56,18 +59,8 @@ public class BidHistory {
                             bestOfferedUtils.put(party, bestOfferedUtils.containsKey(party) ? Math.max(bestOfferedUtils.get(party), util) : util);
                             worstOfferedUtils.put(party, worstOfferedUtils.containsKey(party) ? Math.min(worstOfferedUtils.get(party), util) : util);
 
-                            if (!acceptedUtils.containsKey(party)) {
-                                acceptedUtils.put(party, new HashMap<>());
-                            }
-
+                            acceptedUtils.put(party, new HashMap<>());
                             acceptedUtils.get(party).put(i, util);
-                        }
-                    }
-
-                    gLog.println("Accepted values");
-                    for (String party : acceptedUtils.keySet()) {
-                        for (Map.Entry<Integer, Double> value : acceptedUtils.get(party).entrySet()) {
-                            gLog.println(party + " " + value);
                         }
                     }
                 }
@@ -80,6 +73,8 @@ public class BidHistory {
         gLog.println(bestOfferedUtils);
         gLog.println("Worst");
         gLog.println(worstOfferedUtils);
+        gLog.println("Accepted");
+        gLog.println(acceptedUtils);
     }
 
     public Map<String, Double> getBestOfferedUtils() {
@@ -98,9 +93,15 @@ public class BidHistory {
         }
     }
 
-    public double getLuckyBid(AgentID partyId) {
-        double l = acceptedUtils.get(partyId.getName()).get(RNG.nextInt(round));
-        gLog.println("Lucky BID");
-        return l;
+    public double getLuckyValue(AgentID partyId) {
+        double val = 0.999;
+        try {
+            for (int i : acceptedUtils.get(partyId.getName()).keySet()) {
+                val = Math.min(acceptedUtils.get(partyId.getName()).get(i), val);
+            }
+        } catch (Exception ignored) {
+        }
+        gLog.println("Lucky val for " + partyId.getName() + ": " + val);
+        return val;
     }
 }

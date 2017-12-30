@@ -81,11 +81,18 @@ public interface AgentAPI {
     boolean useHistory();
 
     /**
-     * Value after which the agent will offer the min best offer.
+     * Value after which the agent will offer the min best received offer.
      *
      * @return a number in [0,1]
      */
     double getConcessionThreshold();
+
+    /**
+     * After this time threshold start offering enemy smallest offers from history.
+     *
+     * @return a number in [0,1]
+     */
+    double getSoftConcessionThreshold();
 
     /**
      * Number of previous rounds to to search in history.
