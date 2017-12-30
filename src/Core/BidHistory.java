@@ -94,7 +94,7 @@ public class BidHistory {
     }
 
     public double getLuckyValue(AgentID partyId) {
-        double val = 0.999;
+        double val = 1.0;
         try {
             for (int i : acceptedUtils.get(partyId.getName()).keySet()) {
                 val = Math.min(acceptedUtils.get(partyId.getName()).get(i), val);
@@ -102,6 +102,6 @@ public class BidHistory {
         } catch (Exception ignored) {
         }
         gLog.println("Lucky val for " + partyId.getName() + ": " + val);
-        return val;
+        return 1.0;
     }
 }
