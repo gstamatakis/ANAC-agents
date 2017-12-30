@@ -54,7 +54,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         filename = "C:/Users/gstamatakis/IdeaProjects/ANAC-agents/logs/" + AgentStrat + "_logs.txt";
 
         try {
-            gLog = new PrintWriter(new FileWriter(filename, true), true);
+            gLog = new PrintWriter(new FileWriter(filename, true));
         } catch (Exception e) {
             gLog = new PrintWriter(System.out);
         }
@@ -63,9 +63,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         useHistory = useHistory();
         if (useHistory) {
             try {
-                gLog.println("FROM " + System.currentTimeMillis());
-                bidHistory = new BidHistory(info, getData());
-                gLog.println("TO " + System.currentTimeMillis());
+                bidHistory = new BidHistory(RNG, getData());
             } catch (Exception e) {
                 gLog.println(e.toString());
                 useHistory = false;
@@ -101,7 +99,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         Double targetTime;
         Bid bidToOffer;
 
-        if (Information.getRound() < 3) {
+        if (Information.getRound() < 2) {
             try {
                 return new Offer(getPartyId(), Information.updateMyBidHistory(utilitySpace.getMaxUtilityBid()));
             } catch (Exception e) {

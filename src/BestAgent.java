@@ -71,7 +71,7 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public int getMemoryDepth() {
-        return 3;
+        return 1;
     }
 
     @Override

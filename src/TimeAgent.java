@@ -44,7 +44,7 @@ public class TimeAgent extends ThrashAgent {
 
     @Override
     public double getCutoffValue() {
-        return 1e-3;
+        return 1e-6;
     }
 
     @Override

@@ -26,7 +26,6 @@ public class NegotiationStatistics {
     private int round;
     private double MaxPopularBidUtility;
     private double OwnWorstOfferedUtility;
-    private Boolean ConstantWeightFunction;
 
     NegotiationStatistics(AbstractUtilitySpace utilitySpace, Random RNG) {
         this.utilitySpace = utilitySpace;
@@ -41,7 +40,6 @@ public class NegotiationStatistics {
         round = 0;
         MaxPopularBidUtility = 0.0;
         OwnWorstOfferedUtility = 1.0;
-        ConstantWeightFunction = true;
 
         ArrayList<Value> values;
         for (Issue issue : issues) {
@@ -114,14 +112,6 @@ public class NegotiationStatistics {
     void initOpponent(AgentID sender) {
         Opponent opponent = new Opponent(RNG);
         opponent.name = sender.getName().split("@")[0];
-        opponent.isSelf = opponent.name.equals(myDescription);
-
-        //Attempt to extract historical data
-        if(useHistory){
-            try {
-               // bidHistory.initOppVals(opponent,sender);
-            }catch (Exception ignored){}
-        }
 
         for (Issue issue : issues) {
             opponent.ValueFrequency.put(issue, new HashMap<>());
@@ -188,11 +178,6 @@ public class NegotiationStatistics {
             Value value = offeredBid.getValue(issue.getNumber());
             opponent.updateFrequency(issue, value, 1);
 
-            //Avoid useless updates..
-            if (!ConstantWeightFunction) {
-                opponent.updateWeightedFrequency(issue, value, 1.0);
-            }
-
             allValueFrequency.get(issue).put(value, allValueFrequency.get(issue).get(value) + 1); // update the list
         }
 
@@ -229,7 +214,10 @@ public class NegotiationStatistics {
 
     public class UtilityComparator implements Comparator<Bid> {
         public int compare(Bid a, Bid b) {
-            return Double.compare(utilitySpace.getUtilityWithDiscount(a, 0.0), utilitySpace.getUtilityWithDiscount(b, 0.0));
+            return Double.compare(
+                    utilitySpace.getUtilityWithDiscount(a, 0.0),
+                    utilitySpace.getUtilityWithDiscount(b, 0.0)
+            );
         }
     }
 
@@ -288,38 +276,10 @@ public class NegotiationStatistics {
         return max_value;
     }
 
-    /**
-     * Based on the frequency of opponentsValueFrequencyWeighted, returns the most
-     * frequent weighted value of this issue of this opponent
-     *
-     * @param sender The AgentID of the sender.
-     * @param issue  The issue.
-     */
-    private Value getValueFrequencyListWeighted(AgentID sender, Issue issue) {
-        double curFreq;
-        double maxFreq = 0;
-        Value maxVal = null;
-        ArrayList<Value> randomOrderValues = getValues(issue);
-
-        Collections.shuffle(randomOrderValues);
-
-        for (Value value : randomOrderValues) {
-            curFreq = opponents.get(sender).ValueFrequencyWeighted.get(issue).get(value);
-            // Record the most frequent element
-            if (maxVal == null || curFreq > maxFreq) {
-                maxFreq = curFreq;
-                maxVal = value;
-            }
-        }
-        return maxVal;
-    }
-
     HashMap<Issue, Value> getMaxValuesForOpponent(AgentID opponent) {
         HashMap<Issue, Value> bestValuesForOpponent = new HashMap<>();
         for (Issue issue : issues) {
-            bestValuesForOpponent.put(issue, ConstantWeightFunction ?
-                    getValueFrequencyList(opponent, issue) :
-                    getValueFrequencyListWeighted(opponent, issue));
+            bestValuesForOpponent.put(issue, getValueFrequencyList(opponent, issue));
         }
         return bestValuesForOpponent;
     }
