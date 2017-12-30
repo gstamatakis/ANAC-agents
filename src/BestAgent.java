@@ -66,7 +66,7 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public double getSoftConcessionThreshold() {
-        return 0.9;
+        return 0.70;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public int getMemoryDepth() {
-        return 1;
+        return 3;
     }
 
     @Override

@@ -54,7 +54,7 @@ public class TimeAgent extends ThrashAgent {
 
     @Override
     public boolean useHistory() {
-        return false;
+        return true;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class TimeAgent extends ThrashAgent {
 
     @Override
     public int getMemoryDepth() {
-        return 3;
+        return 1;
     }
 
     @Override

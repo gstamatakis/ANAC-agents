@@ -2,20 +2,16 @@ package Core;
 
 import list.Tuple;
 import negotiator.AgentID;
-import negotiator.Bid;
 import negotiator.parties.NegotiationInfo;
 import negotiator.persistent.StandardInfoList;
 import negotiator.persistent.StandardInfo;
 import negotiator.persistent.PersistentDataContainer;
 
-import java.time.Instant;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import static Core.ThrashAgent.MemoryDepth;
-import static Core.ThrashAgent.bidHistory;
 import static Core.ThrashAgent.gLog;
 
 public class BidHistory {
@@ -85,6 +81,10 @@ public class BidHistory {
         return this.worstOfferedUtils;
     }
 
+    public Map<String, Map<Integer, Double>> getAcceptedUtils() {
+        return this.acceptedUtils;
+    }
+
     public void setBestOppVals(Opponent opponent, AgentID sender) {
         try {
             opponent.BestOfferUtil = bestOfferedUtils.getOrDefault(sender.getName().split("@")[0], null);
@@ -94,14 +94,6 @@ public class BidHistory {
     }
 
     public double getLuckyValue(AgentID partyId) {
-        double val = 1.0;
-        try {
-            for (int i : acceptedUtils.get(partyId.getName()).keySet()) {
-                val = Math.min(acceptedUtils.get(partyId.getName()).get(i), val);
-            }
-        } catch (Exception ignored) {
-        }
-        gLog.println("Lucky val for " + partyId.getName() + ": " + val);
-        return 1.0;
+        return getBestOfferedUtils().getOrDefault(partyId.getName(), 1.0);
     }
 }

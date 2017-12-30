@@ -88,10 +88,12 @@ public class BidStrategy {
         if (useHistory) {
             try {
                 Map<String, Double> bests = bidHistory.getBestOfferedUtils();
+                int cnt = 0;
                 for (String val : bests.keySet()) {
                     weightedAverage += bests.get(val);
+                    cnt++;
                 }
-                return weightedAverage;
+                return weightedAverage / cnt;
             } catch (Exception ignored) {
             }
         }
