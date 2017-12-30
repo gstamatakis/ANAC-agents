@@ -7,9 +7,11 @@ import negotiator.persistent.StandardInfoList;
 import negotiator.persistent.StandardInfo;
 import negotiator.persistent.PersistentDataContainer;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import static Core.ThrashAgent.MemoryDepth;
 import static Core.ThrashAgent.bidHistory;
 import static Core.ThrashAgent.gLog;
 
@@ -31,16 +33,19 @@ public class BidHistory {
                 history = (StandardInfoList) pData.get();
 
                 //Compute for each party the maximum and minimum utility in last session.
-                if (!history.isEmpty()) {
+                if (!history.isEmpty() && MemoryDepth > 0 && MemoryDepth <= history.size()) {
                     bestOfferedUtils = new HashMap<>();
                     worstOfferedUtils = new HashMap<>();
 
-                    StandardInfo lastInfo = history.get(history.size() - 1);
-                    for (Tuple<String, Double> offered : lastInfo.getUtilities()) {
-                        String party = offered.get1().split("@")[0];
-                        Double util = offered.get2();
-                        bestOfferedUtils.put(party, bestOfferedUtils.containsKey(party) ? Math.max(bestOfferedUtils.get(party), util) : util);
-                        worstOfferedUtils.put(party, worstOfferedUtils.containsKey(party) ? Math.min(worstOfferedUtils.get(party), util) : util);
+                    for (int i = history.size() - 1; i >= history.size() - MemoryDepth; i--) {
+                        StandardInfo lastInfo = history.get(history.size() - 1);
+
+                        for (Tuple<String, Double> offered : lastInfo.getUtilities()) {
+                            String party = offered.get1().split("@")[0];
+                            Double util = offered.get2();
+                            bestOfferedUtils.put(party, bestOfferedUtils.containsKey(party) ? Math.max(bestOfferedUtils.get(party), util) : util);
+                            worstOfferedUtils.put(party, worstOfferedUtils.containsKey(party) ? Math.min(worstOfferedUtils.get(party), util) : util);
+                        }
                     }
                 }
                 break;
@@ -64,13 +69,8 @@ public class BidHistory {
 
     public void initOppVals(Opponent opponent, AgentID sender) {
         try {
-            Map<String, Double> best = ThrashAgent.bidHistory.getBestOfferedUtils();
-            Map<String, Double> worst = ThrashAgent.bidHistory.getWorstOfferedUtils();
-            opponent.BestOfferUtil = best.getOrDefault(sender.getName().split("@")[0], null);
-            opponent.WorstOfferUtil = worst.getOrDefault(sender.getName().split("@")[0], null);
-            gLog.println("B->" + opponent.BestOfferUtil);
-            gLog.println("W->" + opponent.WorstOfferUtil);
-            bidHistory.logHistory();
+            opponent.BestOfferUtil = bestOfferedUtils.getOrDefault(sender.getName().split("@")[0], null);
+            opponent.WorstOfferUtil = worstOfferedUtils.getOrDefault(sender.getName().split("@")[0], null);
         } catch (Exception ignored) {
         }
     }

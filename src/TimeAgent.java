@@ -63,6 +63,11 @@ public class TimeAgent extends ThrashAgent {
     }
 
     @Override
+    public int getMemoryDepth() {
+        return 3;
+    }
+
+    @Override
     public String getDescription() {
         return "Ti SA Std";
     }

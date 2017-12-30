@@ -86,4 +86,11 @@ public interface AgentAPI {
      * @return a number in [0,1]
      */
     double getConcessionThreshold();
+
+    /**
+     * Number of previous rounds to to search in history.
+     *
+     * @return the number of prev rounds
+     */
+    int getMemoryDepth();
 }

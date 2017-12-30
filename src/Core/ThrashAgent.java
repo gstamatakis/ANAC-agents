@@ -35,6 +35,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
     private Random RNG;
     static PrintWriter gLog;
     static String filename;
+    static int MemoryDepth;
 
 
     @Override
@@ -42,6 +43,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         super.init(info);
         this.RNG = getRand();
         utilitySpace = info.getUtilitySpace();
+        MemoryDepth = getMemoryDepth();
         concessionThreshold = getConcessionThreshold();
         myDescription = getDescription();
         VetoVal = getVetoVal();
@@ -56,12 +58,14 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         } catch (Exception e) {
             gLog = new PrintWriter(System.out);
         }
-        gLog.println(Instant.now());
+        gLog.println("*********\n" + Instant.now());
 
         useHistory = useHistory();
         if (useHistory) {
             try {
+                gLog.println("FROM " + System.currentTimeMillis());
                 bidHistory = new BidHistory(info, getData());
+                gLog.println("TO " + System.currentTimeMillis());
             } catch (Exception e) {
                 gLog.println(e.toString());
                 useHistory = false;

@@ -367,7 +367,7 @@ public class BidStrategy {
      * @return True if negotiations need to end.
      */
     boolean selectEndNegotiation(double time) {
-        return !(1.0 - discountFactor < CutoffVal) && reservationVal > getThreshold(time);
+        return 1.0 - discountFactor > CutoffVal && reservationVal > getThreshold(time);
     }
 
     public Bid getMaxBid() {

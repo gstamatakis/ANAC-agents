@@ -51,7 +51,7 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public double getCutoffValue() {
-        return 0.001;
+        return 1e-6;
     }
 
     @Override
@@ -61,12 +61,17 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public boolean useHistory() {
-        return false;
+        return true;
     }
 
     @Override
     public double getConcessionThreshold() {
         return 0.98;
+    }
+
+    @Override
+    public int getMemoryDepth() {
+        return 3;
     }
 
     @Override

@@ -70,6 +70,11 @@ public class Thresh1 extends ThrashAgent {
     }
 
     @Override
+    public int getMemoryDepth() {
+        return 0;
+    }
+
+    @Override
     public String getDescription() {
         return "Th SA Std";
     }
