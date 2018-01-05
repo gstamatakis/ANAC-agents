@@ -34,7 +34,7 @@ public class TimeAgent extends ThrashAgent {
 
     @Override
     public double getBidUtilThreshold() {
-        return 0.99;
+        return 0.96;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class TimeAgent extends ThrashAgent {
 
     @Override
     public double getCutoffValue() {
-        return 1e-6;
+        return 1e-5;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class TimeAgent extends ThrashAgent {
 
     @Override
     public double getSoftConcessionThreshold() {
-        return 0.9;
+        return 0.8;
     }
 
     @Override

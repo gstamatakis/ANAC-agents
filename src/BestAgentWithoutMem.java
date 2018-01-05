@@ -41,7 +41,7 @@ public class BestAgentWithoutMem extends ThrashAgent {
 
     @Override
     public double getBidUtilThreshold() {
-        return 0.96;
+        return 0.99;
     }
 
     @Override
@@ -66,17 +66,17 @@ public class BestAgentWithoutMem extends ThrashAgent {
 
     @Override
     public double getSoftConcessionThreshold() {
-        return 0.9;
+        return 0.80;
     }
 
     @Override
     public double getConcessionThreshold() {
-        return 0.99;
+        return 0.95;
     }
 
     @Override
     public int getMemoryDepth() {
-        return 1;
+        return 4;
     }
 
     @Override

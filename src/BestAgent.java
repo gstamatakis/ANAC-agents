@@ -36,7 +36,7 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public SimulatedAnnealingParams getSimulatedAnnealingParams() {
-        return new SimulatedAnnealingParams(1.0, 0.001, 0.999, 1);
+        return new SimulatedAnnealingParams(1.0, 0.001, 0.999, 2);
     }
 
     @Override
@@ -66,17 +66,17 @@ public class BestAgent extends ThrashAgent {
 
     @Override
     public double getSoftConcessionThreshold() {
-        return 0.70;
+        return 0.80;
     }
 
     @Override
     public double getConcessionThreshold() {
-        return 0.98;
+        return 0.95;
     }
 
     @Override
     public int getMemoryDepth() {
-        return 3;
+        return 4;
     }
 
     @Override

@@ -1,3 +1,5 @@
+#SELECTED FOR ANAC: BestAgent
+
 Agent used in 2017 ANAC for Repeated Multilateral Negotiations in Arbitrary Domains.
 
 Simply extend Core.ThrashAgent and implement the AgentAPI interface e.g. BestAgent.java .
