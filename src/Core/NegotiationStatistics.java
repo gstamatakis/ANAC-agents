@@ -7,8 +7,6 @@ import negotiator.utility.AbstractUtilitySpace;
 
 import java.util.*;
 
-import static Core.ThrashAgent.*;
-
 /**
  * Class used to store info regarding the opponents, the utilSpace and our BidHistory.
  */

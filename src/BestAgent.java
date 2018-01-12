@@ -3,16 +3,10 @@ import Utils.SearchMethodEnum;
 import Utils.SimulatedAnnealingParams;
 import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
-import negotiator.parties.NegotiationInfo;
 
 import java.util.Random;
 
 public class BestAgent extends ThrashAgent {
-
-    @Override
-    public void init(NegotiationInfo info) {
-        super.init(info);
-    }
 
     @Override
     public Random getRand() {

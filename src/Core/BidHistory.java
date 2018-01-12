@@ -2,10 +2,9 @@ package Core;
 
 import list.Tuple;
 import negotiator.AgentID;
-import negotiator.parties.NegotiationInfo;
-import negotiator.persistent.StandardInfoList;
-import negotiator.persistent.StandardInfo;
 import negotiator.persistent.PersistentDataContainer;
+import negotiator.persistent.StandardInfo;
+import negotiator.persistent.StandardInfoList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,6 @@ import static Core.ThrashAgent.MemoryDepth;
 import static Core.ThrashAgent.gLog;
 
 public class BidHistory {
-    private final NegotiationInfo info;
     private StandardInfoList history;
     private Map<String, Double> bestOfferedUtils;
     private Map<String, Double> worstOfferedUtils;
@@ -23,9 +21,8 @@ public class BidHistory {
     private int round;
     private Random RNG;
 
-    public BidHistory(NegotiationInfo info, Random RNG, PersistentDataContainer pData) {
+    public BidHistory(Random RNG, PersistentDataContainer pData) {
         this.RNG = RNG;
-        this.info = info;
 
         switch (pData.getPersistentDataType()) {
             case DISABLED:

@@ -5,9 +5,11 @@ import Utils.StrategyEnum;
 import Utils.ValFreqEnum;
 import negotiator.AgentID;
 import negotiator.Bid;
+import negotiator.Deadline;
 import negotiator.actions.*;
 import negotiator.parties.AbstractNegotiationParty;
-import negotiator.parties.NegotiationInfo;
+import negotiator.persistent.PersistentDataContainer;
+import negotiator.timeline.TimeLineInfo;
 import negotiator.utility.AbstractUtilitySpace;
 
 import java.io.FileWriter;
@@ -40,10 +42,10 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
 
 
     @Override
-    public void init(NegotiationInfo info) {
-        super.init(info);
+    public void init(AbstractUtilitySpace utilSpace, Deadline dl, TimeLineInfo tl, long randomSeed, AgentID agentId, PersistentDataContainer data) {
+        super.init(utilSpace, dl, tl, randomSeed, agentId, data);
         this.RNG = getRand();
-        utilitySpace = info.getUtilitySpace();
+        utilitySpace = utilSpace;
         MemoryDepth = getMemoryDepth();
         concessionThreshold = getConcessionThreshold();
         softConcessionThreshold = getSoftConcessionThreshold();
@@ -65,7 +67,7 @@ public abstract class ThrashAgent extends AbstractNegotiationParty implements Ag
         useHistory = useHistory();
         if (useHistory) {
             try {
-                bidHistory = new BidHistory(info, RNG, getData());
+                bidHistory = new BidHistory(RNG, getData());
             } catch (Exception e) {
                 gLog.println(e.toString());
                 useHistory = false;
